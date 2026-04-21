@@ -18,7 +18,7 @@ export const SIDE_MENU_DATA = [
 {
  id: "02",
  label: "Manage Tasks",
- icon: LuClickboardCheck,
+ icon: LuClipboardCheck,
  path: "/admin/tasks",
 },
 {
@@ -37,7 +37,7 @@ export const SIDE_MENU_DATA = [
  id: "05",
  label: "Logout",
  icon: LuLogOut,
- path: "logout",
+ path: "/login",
 },
 ];
 
@@ -51,14 +51,14 @@ export const SIDE_MENU_USER_DATA = [
  {
    id: "02",
    label: "My Tasks",
-   icon: LuClickboardCheck,
+   icon: LuClipboardCheck,
    path: "/user/tasks",
  },
  {
    id: "05",
    label: "Logout",
    icon: LuLogOut,
-   path: "logout",
+   path: "/login",
  },
 ];
 
