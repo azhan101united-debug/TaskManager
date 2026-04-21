@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:8000";
+export const BASE_URL = "https://supreme-goldfish-6vg9xwj9jpw734gpx-8000.app.github.dev";
 
 //utils/apiPaths.js
 export const API_PATHS ={
