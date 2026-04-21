@@ -20,14 +20,14 @@ const getTasks = async (req, res ) => {
                 "name email profileUrl"
             );
         } else {
-            task = await task.find({ ...filter, assignedTo: req.user._id}).populate(
+            tasks = await Task.find({ ...filter, assignedTo: req.user._id}).populate(
                 "assignedTo",
-                "name email, profileUrl"
+                "name email profileUrl"
             );
         }
         
         //Add completed todoChecklist count to each task
-        task = await Promise.all(
+        tasks = await Promise.all(
             tasks.map(async (task) => {
                 const completedCount = task.todoChecklist.filter(
                     (item) => item.completed
@@ -69,7 +69,7 @@ const getTasks = async (req, res ) => {
             },
         });
     } catch(error) {
-        res.status(500).json({ mesage: "Server Error", error: error.message});
+        res.status(500).json({ message: "Server Error", error: error.message});
     }
 };
 
@@ -87,7 +87,7 @@ const getTaskById = async (req,res) => {
 
         res.json(task);
     } catch(error) {
-        res.status(500).json({ mesage: "Server Error", error: error.message});
+        res.status(500).json({ message: "Server Error", error: error.message});
     }
 };
 
@@ -103,7 +103,7 @@ const createTask = async (req, res) => {
             dueDate,
             assignedTo,
             attachments,
-            todoChecklists,
+            todoChecklist,
         } = req.body;
 
         if(!Array.isArray(assignedTo)) {
@@ -182,7 +182,7 @@ const updateTaskStatus = async (req, res) => {
         if(!task) return res.status(404).json({ message: "task not found"});
 
         const isAssigned = task.assignedTo.some(
-            (userId) => userId.toString() === req.user._id.tString()
+            (userId) => userId.toString() === req.user._id.toString()
         );
 
         if(!isAssigned && req.user.role !== "admin") {
@@ -209,7 +209,7 @@ const updateTaskStatus = async (req, res) => {
 const updateTaskChecklist = async (req, res ) => {
     try{
         const { todoChecklist } = req.body;
-        const task = await task.findById(req.params.id);
+        const task = await Task.findById(req.params.id);
 
         if(!task) return res.status(404).json({ message: "Task not found"});
 
@@ -217,7 +217,7 @@ const updateTaskChecklist = async (req, res ) => {
             return res.status(403).json({ message: "Not authorized to update checklist" });
         }
 
-        task .todoChecklist = todoChecklist; //Replace with updated checklist
+        task.todoChecklist = todoChecklist; //Replace with updated checklist
 
         // Auto-update progress based on checklist completion
         const completedCount = task.todoChecklist.filter(
@@ -236,7 +236,7 @@ const updateTaskChecklist = async (req, res ) => {
         }
 
         await task.save();
-        const updatedTask = await task.findById(req.params.id).populate(
+        const updatedTask = await Task.findById(req.params.id).populate(
             "assignedTo",
             "name email profileUrl"
         );
@@ -291,7 +291,7 @@ const getDashboardData = async (req, res) => {
         ]);
         const taskPriorityLevels = taskPriorities.reduce((acc, priority) => {
             acc[priority] = 
-            taskPriorityLevelRaw.find((item) => item._id === priority)?.count || 0;
+            taskPriorityLevelsRaw.find((item) => item._id === priority)?.count || 0;
             return acc;
         }, {});
 
